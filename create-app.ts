@@ -1,25 +1,17 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import retry from "async-retry";
-import { copyFileSync, existsSync, mkdirSync } from "node:fs";
+import { mkdirSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { cyan, green, red } from "picocolors";
 import type { RepoInfo } from "./helpers/examples";
-import {
-  downloadAndExtractExample,
-  downloadAndExtractRepo,
-  existsInRepo,
-  getRepoInfo,
-  hasRepo,
-} from "./helpers/examples";
+import { existsInRepo, getRepoInfo, hasRepo } from "./helpers/examples";
 import type { PackageManager } from "./helpers/get-pkg-manager";
 import { tryGitInit } from "./helpers/git";
-import { install } from "./helpers/install";
 import { isFolderEmpty } from "./helpers/is-folder-empty";
 import { getOnline } from "./helpers/is-online";
 import { isWriteable } from "./helpers/is-writeable";
 
 import type { TemplateMode, TemplateType } from "./templates";
-import { getTemplateFile, installTemplate } from "./templates";
+import { installTemplate } from "./templates";
 
 export class DownloadError extends Error {}
 
@@ -145,78 +137,20 @@ export async function createApp({
   const packageJsonPath = join(root, "package.json");
   let hasPackageJson = false;
 
-  if (example) {
-    /**
-     * If an example repository is provided, clone it.
-     */
-    try {
-      if (repoInfo) {
-        const repoInfo2 = repoInfo;
-        console.log(`Downloading files from repo ${cyan(example)}. This might take a moment.`);
-        console.log();
-        await retry(() => downloadAndExtractRepo(root, repoInfo2), {
-          retries: 3,
-        });
-      } else {
-        console.log(`Downloading files for example ${cyan(example)}. This might take a moment.`);
-        console.log();
-        await retry(() => downloadAndExtractExample(root, example), {
-          retries: 3,
-        });
-      }
-    } catch (reason) {
-      function isErrorLike(err: unknown): err is { message: string } {
-        return (
-          typeof err === "object" &&
-          err !== null &&
-          typeof (err as { message?: unknown }).message === "string"
-        );
-      }
-      throw new DownloadError(isErrorLike(reason) ? reason.message : reason + "");
-    }
-    // Copy `.gitignore` if the application did not provide one
-    const ignorePath = join(root, ".gitignore");
-    if (!existsSync(ignorePath)) {
-      copyFileSync(getTemplateFile({ template, mode, file: "gitignore" }), ignorePath);
-    }
-
-    // Copy `next-env.d.ts` to any example that is typescript
-    const tsconfigPath = join(root, "tsconfig.json");
-    if (existsSync(tsconfigPath)) {
-      copyFileSync(
-        getTemplateFile({ template, mode: "ts", file: "next-env.d.ts" }),
-        join(root, "next-env.d.ts")
-      );
-    }
-
-    hasPackageJson = existsSync(packageJsonPath);
-    if (!skipInstall && hasPackageJson) {
-      console.log("Installing packages. This might take a couple of minutes.");
-      console.log();
-
-      await install(packageManager, isOnline);
-      console.log();
-    }
-  } else {
-    /**
-     * If an example repository is not provided for cloning, proceed
-     * by installing from a template.
-     */
-    await installTemplate({
-      appName,
-      root,
-      template,
-      mode,
-      packageManager,
-      isOnline,
-      tailwind,
-      eslint,
-      srcDir,
-      importAlias,
-      skipInstall,
-      turbopack,
-    });
-  }
+  await installTemplate({
+    appName,
+    root,
+    template,
+    mode,
+    packageManager,
+    isOnline,
+    tailwind,
+    eslint,
+    srcDir,
+    importAlias,
+    skipInstall,
+    turbopack,
+  });
 
   if (disableGit) {
     console.log("Skipping git initialization.");

@@ -11,12 +11,6 @@ export type TemplateType =
   | "default-tw-empty";
 export type TemplateMode = "js" | "ts";
 
-export interface GetTemplateFileArgs {
-  template: TemplateType;
-  mode: TemplateMode;
-  file: string;
-}
-
 export interface InstallTemplateArgs {
   appName: string;
   root: string;

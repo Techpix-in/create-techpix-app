@@ -9,22 +9,11 @@ import { cyan, bold } from "picocolors";
 import { Sema } from "async-sema";
 import pkg from "../package.json";
 
-import { GetTemplateFileArgs, InstallTemplateArgs } from "./types";
+import { InstallTemplateArgs } from "./types";
 
 // Do not rename or format. sync-react script relies on this line.
 // prettier-ignore
 const nextjsReactPeerVersion = "^19.0.0";
-
-/**
- * Get the file path for a given file in a template, e.g. "next.config.js".
- */
-export const getTemplateFile = ({
-  template,
-  mode,
-  file,
-}: GetTemplateFileArgs): string => {
-  return path.join(__dirname, template, mode, file);
-};
 
 export const SRC_DIR_NAMES = ["app", "pages", "styles"];
 

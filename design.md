@@ -84,6 +84,7 @@ templates/
 │   ├── package.json.hbs            # Base deps – interpolated with project data
 │   ├── tsconfig.json               # TypeScript config (plain copy)
 │   ├── eslint.config.js            # ESLint rules (plain copy)
+│   ├── commitlint.config.js        # for code hygiene rules (plain copy)
 │   ├── Makefile                    # for running multi-env dockerfiles 
 │   └── docker/                     # Docker dir for multi-env
 │   |   ├── staging/

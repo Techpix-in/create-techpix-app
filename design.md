@@ -83,9 +83,16 @@ templates/
 │   ├── next.config.js              # Standalone output config (plain copy)
 │   ├── package.json.hbs            # Base deps – interpolated with project data
 │   ├── tsconfig.json               # TypeScript config (plain copy)
-│   ├── tailwind.config.js          # Tailwind setup (plain copy)
 │   ├── eslint.config.js            # ESLint rules (plain copy)
-│   ├── Dockerfile                  # Docker build script (plain copy)
+│   ├── Makefile                    # for running multi-env dockerfiles 
+│   └── docker/                     # Docker dir for multi-env
+│   |   ├── staging/
+|   |   |   ├── compose.yaml
+|   |   |   └── Dockerfile    
+│   |   └── production/
+|   |       ├── compose.yaml
+|   |       └── Dockerfile   
+|   ├── public/                     # public assets
 │   └── src/                        # Next.js 15 app router structure
 │       ├── app/
 │       │   ├── auth/               # Authentication routes
@@ -98,8 +105,13 @@ templates/
 │       │   └── globals.css         # Global styles
 │       ├── components/
 │       │   └── ui/                 # Shadcn/ui components directory
+│       ├── config/
+│       │   └── config.ts           # Configuration files for the project
 │       ├── hooks/
 │       │   └── example_hook.ts     # Custom hook 
+│       ├── lib/
+│       │   ├── utils.ts            # Utility functions
+│       │   └── constants.ts        # MACROS, constants 
 │       ├── types/
 │       │   └── index.ts            # TypeScript types 
 │       └── data/
@@ -118,7 +130,7 @@ templates/
 │   └── husky/                      # Hook scripts
 ├── optional/                       # User-selectable features
 │   ├── api-clients/
-│   │   ├── axios-setup.ts          # Axios helper (plain copy)
+│   │   ├── axios-setup.ts          # Axios helper (mandatory)
 │   │   ├── react-query-setup.ts    # React-Query helper
 │   │   └── graphql-setup.ts        # Apollo/GraphQL helper
 │   ├── validation/

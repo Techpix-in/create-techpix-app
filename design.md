@@ -106,6 +106,20 @@ templates/
 │       │   └── globals.css         # Global styles
 │       ├── components/
 │       │   └── ui/                 # Shadcn/ui components directory
+│       |      ├── button.tsx                  # Button component with variants
+│       |      ├── badge.tsx                   # Badge component for status indicators
+│       |      ├── card.tsx                    # Card component for content containers
+│       |      ├── checkbox.tsx                # Checkbox component for form inputs
+│       |      ├── dialog.tsx                  # Modal dialog component
+│       |      ├── label.tsx                   # Label component for form fields
+│       |      ├── pagination.tsx              # Pagination component for data navigation
+│       |      ├── radio-group.tsx             # Radio group component for form selections
+│       |      ├── select.tsx                  # Select dropdown component
+│       |      ├── slider.tsx                  # Slider component for range inputs
+│       |      ├── switch.tsx                  # Toggle switch component
+│       |      ├── textarea.tsx                # Textarea component for multi-line text
+│       |      ├── table.tsx                   # Table component for data display
+│       |      └── input.tsx                   # Input component for text fields
 │       ├── config/
 │       │   └── config.ts           # Configuration files for the project
 │       ├── hooks/
@@ -117,14 +131,6 @@ templates/
 │       │   └── index.ts            # TypeScript types 
 │       └── data/
 │           └── mockData.ts         # Mock data for development
-├── shadcn/                         # ShadCN UI components
-│   ├── components.json             # Component registry (plain copy)
-│   ├── button.tsx                  # Pre-built component
-│   ├── badge.tsx                   # Badge component
-│   ├── card.tsx                    # Card component
-│   ├── dialog.tsx                  # Dialog component (for createEventDialog)
-│   ├── table.tsx                   # Table component (for data tables)
-│   └── input.tsx                   # Input component
 ├── commit-tools/                   # Git hooks & commit tools
 │   ├── commitlint.config.js        # Conventional commits rules
 │   ├── lint-staged.config.js       # Lint-staged setup

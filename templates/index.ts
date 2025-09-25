@@ -72,7 +72,6 @@ export const installTemplate = async ({
     // Update docker compose image names to include the project name
     const composeTargets: Array<{ env: string; file: string }> = [
         { env: "development", file: path.join(root, "docker", "development", "compose.yaml") },
-        { env: "staging", file: path.join(root, "docker", "staging", "compose.yaml") },
         { env: "production", file: path.join(root, "docker", "production", "compose.yaml") },
     ];
 

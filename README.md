@@ -26,9 +26,6 @@ my-app/
 │  ├─ development/
 │  │  ├─ Dockerfile
 │  │  └─ compose.yaml              # image: my-app-development
-│  ├─ staging/
-│  │  ├─ Dockerfile
-│  │  └─ compose.yaml              # image: my-app-staging
 │  └─ production/
 │     ├─ Dockerfile
 │     └─ compose.yaml              # image: my-app-production

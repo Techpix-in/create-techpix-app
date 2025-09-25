@@ -1,8 +1,0 @@
-services:
- techpix-staging:
-    build:
-      context: ../../
-      dockerfile: docker/staging/Dockerfile
-    image: techpix-staging
-    ports:
-      - "3001:3000"

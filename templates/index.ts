@@ -69,6 +69,28 @@ export const installTemplate = async ({
         JSON.stringify(existingPackageJson, null, 2) + os.EOL,
     );
 
+    // Update docker compose image names to include the project name
+    const composeTargets: Array<{ env: string; file: string }> = [
+        { env: "development", file: path.join(root, "docker", "development", "compose.yaml") },
+        { env: "staging", file: path.join(root, "docker", "staging", "compose.yaml") },
+        { env: "production", file: path.join(root, "docker", "production", "compose.yaml") },
+    ];
+
+    await Promise.all(
+        composeTargets.map(async ({ env, file }) => {
+            try {
+                const contents = await fs.readFile(file, "utf8");
+                const updated = contents.replace(/^(\s*image:\s*).+$/m, `$1${appName}-${env}`);
+                if (updated !== contents) {
+                    await fs.writeFile(file, updated);
+                }
+            } catch {
+                // If a compose file doesn't exist, skip silently
+                // preserving the techpix as default
+            }
+        })
+    );
+
     if (skipInstall) return;
 
     console.log("\nInstalling dependencies:");

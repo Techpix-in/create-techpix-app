@@ -1,0 +1,8 @@
+services:
+ techpix-development:
+    build:
+      context: ../../
+      dockerfile: docker/development/Dockerfile
+    image: techpix-development
+    ports:
+      - "3001:3000"

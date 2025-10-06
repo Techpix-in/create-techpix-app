@@ -4,14 +4,14 @@ The easiest way to get started with Techpix projects is by using create-techpix-
 
 ## Features
 
-- **Next.js App Router (14+) with TypeScript**: Opinionated setup with `src/`, `app/`, and `layout`.
+- **Next.js App Router (15+) with TypeScript**: Opinionated setup with `src/`, `app/`, and `layout`.
 - **Tailwind CSS pre-configured**: `postcss.config.mjs`, `tailwind` plugins, and `globals.css` ready.
 - **Shadcn/UI components included**: `button`, `badge`, `card`, `checkbox`, `dialog`, `input`, `label`, `pagination`, `radio-group`, `select`, `slider`, `switch`, `table`, `textarea`, and `sonner` toast wiring.
 - **ESLint config and TS config**: Template ships with `eslint.config.mjs` and `tsconfig.json` aligned to Next.js.
 - **Docker-first, multi-env setup**:
-  - `docker/development`, `docker/staging`, `docker/production` with multi-stage Dockerfiles.
-  - Per-env `compose.yaml` files.
-  - **Image names auto-include project name** during scaffolding (e.g. `my-app-development`).
+    - `docker/development`, `docker/production` with multi-stage Dockerfiles.
+    - Per-env `compose.yaml` files.
+    - **Image names auto-include project name** during scaffolding (e.g. `my-app-development`).
 - **Next.js standalone output**: Production images leverage `.next/standalone` for smaller containers.
 - **Ready-made routes and structure**: `auth/` route, `(main)/` group, example page and component folder.
 - **Utilities and libs**: `lib/utils.ts` and shared UI primitives for rapid development.
@@ -88,5 +88,3 @@ yarn create techpix-app
 # or
 pnpm create techpix-app
 ```
-
-

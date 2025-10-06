@@ -1,8 +1,8 @@
 services:
-  with-docker-multi-env-production:
+ techpix-production:
     build:
       context: ../../
       dockerfile: docker/production/Dockerfile
-    image: with-docker-multi-env-production
+    image: techpix-production
     ports:
       - "3001:3000"

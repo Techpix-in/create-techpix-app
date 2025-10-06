@@ -72,6 +72,7 @@ my-app/
 ├─ components.json
 ├─ .eslintrc / eslint.config.mjs
 ├─ next.config.ts
+├─ Makefile
 ├─ package.json
 ├─ postcss.config.mjs
 └─ tsconfig.json

@@ -13,6 +13,7 @@ import { validateNpmName } from "./helpers/validate-pkg";
 import packageJson from "./package.json";
 import prompts from "prompts";
 import type { ApiClientType } from "./types";
+import { ValidationError } from "./helpers/validation-error";
 
 let projectPath: string = "";
 
@@ -34,69 +35,80 @@ const program = new Command(packageJson.name)
 
 const packageManager: PackageManager = getPkgManager();
 
+function checkNodeVersion() {
+  const [major] = process.versions.node.split(".").map(Number);
+  if (major < 18) {
+    throw new ValidationError(
+      `Node.js version ${process.versions.node} is not supported.`,
+      "nodeVersion",
+      "Please upgrade to Node.js 18 or higher."
+    );
+  }
+}
+
 async function run(): Promise<void> {
-  if (typeof projectPath === "string") {
-    projectPath = projectPath.trim();
+  try {
+    checkNodeVersion();
+    if (typeof projectPath === "string") {
+      projectPath = projectPath.trim();
+    }
+
+    if (!projectPath) {
+      console.log(
+        "\nPlease specify the project directory:\n" +
+        `  ${cyan(packageJson.name)} ${green("<project-directory>")}\n` +
+        "For example:\n" +
+        `  ${cyan(packageJson.name)} ${green("my-techpix-app")}\n\n`
+      );
+      process.exit(1);
+    }
+
+    const appPath = resolve(projectPath);
+    const appName = basename(appPath);
+
+    const validation = validateNpmName(appName);
+    if (!validation.valid) {
+      throw new ValidationError(`Invalid project name: ${appName}`, "projectName", validation.problems[0]);
+    }
+
+    if (existsSync(appPath) && !isFolderEmpty(appPath, appName)) {
+      process.exit(1);
+    }
+
+    const res = await prompts({
+      type: "select",
+      name: "apiClient",
+      message: "Which API client would you like to use?",
+      choices: [
+        { title: "None", value: null },
+        { title: "Axios", value: "axios" },
+        { title: "React Query", value: "react-query" },
+        { title: "GraphQL (Apollo)", value: "graphql" },
+      ],
+      initial: 0,
+    });
+
+    const apiClient: ApiClientType = res.apiClient;
+
+    // Use base template with default settings
+    await createApp({
+      appPath,
+      packageManager,
+      typescript: true,
+      tailwind: true,
+      eslint: true,
+      app: true,
+      srcDir: true,
+      importAlias: "@/*",
+      skipInstall: false,
+      empty: false,
+      turbopack: true,
+      disableGit: false,
+      apiClient,
+    });
+  } catch (error) {
+    await exit(error);
   }
-
-  if (!projectPath) {
-    console.log(
-      "\nPlease specify the project directory:\n" +
-      `  ${cyan(packageJson.name)} ${green("<project-directory>")}\n` +
-      "For example:\n" +
-      `  ${cyan(packageJson.name)} ${green("my-techpix-app")}\n\n`
-    );
-    process.exit(1);
-  }
-
-  const appPath = resolve(projectPath);
-  const appName = basename(appPath);
-
-  const validation = validateNpmName(appName);
-  if (!validation.valid) {
-    console.error(
-      `Could not create a project called ${red(`"${appName}"`)} because of npm naming restrictions:`
-    );
-
-    validation.problems.forEach((p) => console.error(`    ${red("*")} ${p}`));
-    process.exit(1);
-  }
-
-  if (existsSync(appPath) && !isFolderEmpty(appPath, appName)) {
-    process.exit(1);
-  }
-
-  const res = await prompts({
-    type: "select",
-    name: "apiClient",
-    message: "Which API client would you like to use?",
-    choices: [
-      { title: "None", value: null },
-      { title: "Axios", value: "axios" },
-      { title: "React Query", value: "react-query" },
-      { title: "GraphQL (Apollo)", value: "graphql" },
-    ],
-    initial: 0,
-  });
-
-  const apiClient: ApiClientType = res.apiClient;
-
-  // Use base template with default settings
-  await createApp({
-    appPath,
-    packageManager,
-    typescript: true,
-    tailwind: true,
-    eslint: true,
-    app: true,
-    srcDir: true,
-    importAlias: "@/*",
-    skipInstall: false,
-    empty: false,
-    turbopack: true,
-    disableGit: false,
-    apiClient,
-  });
 }
 
 const update = updateCheck(packageJson).catch(() => null);
@@ -119,23 +131,24 @@ async function notifyUpdate(): Promise<void> {
         "\n"
       );
     }
-    process.exit(0);
   } catch {
     // ignore error
   }
 }
 
-async function exit(reason: { command?: string }) {
+async function exit(reason: any) {
   console.log();
-  console.log("Aborting installation.");
-  if (reason.command) {
+  if (reason instanceof ValidationError) {
+    console.log(reason.format());
+  } else if (reason.command) {
     console.log(`  ${cyan(reason.command)} has failed.`);
   } else {
     console.log(red("Unexpected error. Please report it as a bug:") + "\n", reason);
   }
+  console.log("\nAborting installation.");
   console.log();
   await notifyUpdate();
   process.exit(1);
 }
 
-run().then(notifyUpdate).catch(exit);
+run().then(notifyUpdate);

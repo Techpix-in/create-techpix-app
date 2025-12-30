@@ -10,6 +10,7 @@ import { isWriteable } from "./helpers/is-writeable";
 
 import type { TemplateMode, TemplateType } from "./types";
 import { installTemplate } from "./templates";
+import { ProjectRollback } from "./helpers/rollback";
 
 export async function createApp({
   appPath,
@@ -57,73 +58,80 @@ export async function createApp({
   }
 
   const appName = basename(root);
+  const rollbackManager = new ProjectRollback();
 
-  mkdirSync(root, { recursive: true });
-  if (!isFolderEmpty(root, appName)) {
-    process.exit(1);
-  }
+  try {
+    if (!existsSync(root)) {
+      mkdirSync(root, { recursive: true });
+      rollbackManager.trackDir(root);
+    }
 
-  const useYarn = packageManager === "yarn";
-  const isOnline = !useYarn || (await getOnline());
-  const originalDirectory = process.cwd();
+    if (!isFolderEmpty(root, appName)) {
+      process.exit(1);
+    }
 
-  console.log(`Creating a new Next.js app in ${green(root)}.`);
-  console.log();
+    const useYarn = packageManager === "yarn";
+    const isOnline = !useYarn || (await getOnline());
+    const originalDirectory = process.cwd();
 
-  process.chdir(root);
-
-  /**
-   * Install from the base template.
-   */
-  await installTemplate({
-    appName,
-    root,
-    template,
-    mode,
-    packageManager,
-    isOnline,
-    tailwind,
-    eslint,
-    biome: false,
-    srcDir,
-    importAlias,
-    skipInstall,
-    turbopack,
-    rspack: false,
-    apiClient,
-  });
-
-  if (disableGit) {
-    console.log("Skipping git initialization.");
+    console.log(`Creating a new Next.js app in ${green(root)}.`);
     console.log();
-  } else if (tryGitInit(root)) {
-    console.log("Initialized a git repository.");
+
+    process.chdir(root);
+
+    await installTemplate({
+      appName,
+      root,
+      template,
+      mode,
+      packageManager,
+      isOnline,
+      tailwind,
+      eslint,
+      biome: false,
+      srcDir,
+      importAlias,
+      skipInstall,
+      turbopack,
+      rspack: false,
+      apiClient,
+    });
+
+    if (disableGit) {
+      console.log("Skipping git initialization.");
+      console.log();
+    } else if (tryGitInit(root)) {
+      console.log("Initialized a git repository.");
+      console.log();
+    }
+
+    let cdpath: string;
+    if (resolve(originalDirectory, appName) === root) {
+      cdpath = appName;
+    } else {
+      cdpath = appPath;
+    }
+
+    console.log(`${green("Success!")} Created ${appName} at ${appPath}`);
     console.log();
+    console.log("Inside that directory, you can run several commands:");
+    console.log();
+    console.log(cyan(`  ${packageManager} ${useYarn ? "" : "run "}dev`));
+    console.log("    Starts the development server.");
+    console.log();
+    console.log(cyan(`  ${packageManager} ${useYarn ? "" : "run "}build`));
+    console.log("    Builds the app for production.");
+    console.log();
+    console.log(cyan(`  ${packageManager} start`));
+    console.log("    Runs the built app in production mode.");
+    console.log();
+    console.log("We suggest that you begin by typing:");
+    console.log();
+    console.log(cyan("  cd"), cdpath);
+    console.log(`  ${cyan(`${packageManager} ${useYarn ? "" : "run "}dev`)}`);
+    console.log();
+  } catch (error) {
+    await rollbackManager.rollback();
+    throw error;
   }
-
-  let cdpath: string;
-  if (join(originalDirectory, appName) === appPath) {
-    cdpath = appName;
-  } else {
-    cdpath = appPath;
-  }
-
-  console.log(`${green("Success!")} Created ${appName} at ${appPath}`);
-
-  console.log("Inside that directory, you can run several commands:");
-  console.log();
-  console.log(cyan(`  ${packageManager} ${useYarn ? "" : "run "}dev`));
-  console.log("    Starts the development server.");
-  console.log();
-  console.log(cyan(`  ${packageManager} ${useYarn ? "" : "run "}build`));
-  console.log("    Builds the app for production.");
-  console.log();
-  console.log(cyan(`  ${packageManager} start`));
-  console.log("    Runs the built app in production mode.");
-  console.log();
-  console.log("We suggest that you begin by typing:");
-  console.log();
-  console.log(cyan("  cd"), cdpath);
-  console.log(`  ${cyan(`${packageManager} ${useYarn ? "" : "run "}dev`)}`);
-  console.log();
 }

@@ -1,6 +1,6 @@
 // @ts-check
-import { rm } from "fs/promises";
-import { join } from "path";
+import { rm } from "node:fs/promises";
+import { join } from "node:path";
 
 const args = process.argv.slice(2);
 if (args.length === 0) {

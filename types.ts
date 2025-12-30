@@ -12,6 +12,8 @@ export type TemplateType =
   | "default-tw-empty";
 export type TemplateMode = "js" | "ts";
 
+export type ApiClientType = "axios" | "react-query" | "graphql" | null;
+
 export interface GetTemplateFileArgs {
   template: TemplateType;
   mode: TemplateMode;
@@ -33,4 +35,5 @@ export interface InstallTemplateArgs {
   skipInstall: boolean;
   turbopack: boolean;
   rspack: boolean;
+  apiClient: ApiClientType;
 }

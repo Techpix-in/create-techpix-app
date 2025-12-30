@@ -24,6 +24,7 @@ export async function createApp({
   empty,
   turbopack,
   disableGit,
+  apiClient,
 }: {
   appPath: string;
   packageManager: PackageManager;
@@ -37,6 +38,7 @@ export async function createApp({
   empty: boolean;
   turbopack: boolean;
   disableGit?: boolean;
+  apiClient: import("./types").ApiClientType;
 }): Promise<void> {
   // Use base template from templates/base
   const mode: TemplateMode = "ts";
@@ -88,6 +90,7 @@ export async function createApp({
     skipInstall,
     turbopack,
     rspack: false,
+    apiClient,
   });
 
   if (disableGit) {

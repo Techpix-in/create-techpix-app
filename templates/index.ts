@@ -28,6 +28,11 @@ export const installTemplate = async ({
     root,
     packageManager,
     isOnline,
+    tailwind,
+    eslint,
+    srcDir,
+    importAlias,
+    apiClient,
     skipInstall,
 }: InstallTemplateArgs) => {
     console.log(bold(`Using ${packageManager}.`));
@@ -68,6 +73,73 @@ export const installTemplate = async ({
         packageJsonPath,
         JSON.stringify(existingPackageJson, null, 2) + os.EOL,
     );
+
+    if (apiClient) {
+        console.log(`\nConfiguring ${apiClient} with standard folder structure...`);
+        const libDir = path.join(root, "src", "lib");
+        const servicesDir = path.join(root, "src", "services");
+        const hooksDir = path.join(root, "src", "hooks", "api");
+        const providersDir = path.join(root, "src", "providers");
+
+        await fs.mkdir(libDir, { recursive: true });
+        await fs.mkdir(servicesDir, { recursive: true });
+
+        const optionalTemplatesPath = path.join(__dirname, "optional", "api-clients");
+
+        switch (apiClient) {
+            case "axios": {
+                // Client
+                const clientContent = await fs.readFile(path.join(optionalTemplatesPath, "axios-setup.ts"), "utf8");
+                await fs.writeFile(path.join(libDir, "api-client.ts"), clientContent);
+
+                // Service Example
+                const serviceContent = await fs.readFile(path.join(optionalTemplatesPath, "example-service.ts"), "utf8");
+                await fs.writeFile(path.join(servicesDir, "user-service.ts"), serviceContent);
+
+                existingPackageJson.dependencies["axios"] = "^1.7.0";
+                break;
+            }
+            case "react-query": {
+                // Base Client (needs axios for the example-service)
+                const clientContent = await fs.readFile(path.join(optionalTemplatesPath, "axios-setup.ts"), "utf8");
+                await fs.writeFile(path.join(libDir, "api-client.ts"), clientContent);
+
+                // Provider
+                await fs.mkdir(providersDir, { recursive: true });
+                const providerContent = await fs.readFile(path.join(optionalTemplatesPath, "react-query-setup.tsx"), "utf8");
+                await fs.writeFile(path.join(providersDir, "query-provider.tsx"), providerContent);
+
+                // Service
+                const serviceContent = await fs.readFile(path.join(optionalTemplatesPath, "example-service.ts"), "utf8");
+                await fs.writeFile(path.join(servicesDir, "user-service.ts"), serviceContent);
+
+                // Hooks
+                await fs.mkdir(hooksDir, { recursive: true });
+                const hookContent = await fs.readFile(path.join(optionalTemplatesPath, "example-hook.ts"), "utf8");
+                await fs.writeFile(path.join(hooksDir, "use-users.ts"), hookContent);
+
+                existingPackageJson.dependencies["axios"] = "^1.7.0";
+                existingPackageJson.dependencies["@tanstack/react-query"] = "^5.0.0";
+                existingPackageJson.dependencies["@tanstack/react-query-devtools"] = "^5.0.0";
+                break;
+            }
+            case "graphql": {
+                // Client
+                const clientContent = await fs.readFile(path.join(optionalTemplatesPath, "graphql-setup.ts"), "utf8");
+                await fs.writeFile(path.join(libDir, "apollo-client.ts"), clientContent);
+
+                existingPackageJson.dependencies["@apollo/client"] = "^3.10.0";
+                existingPackageJson.dependencies["graphql"] = "^16.8.0";
+                break;
+            }
+        }
+
+        // Save updated package.json with new dependencies
+        await fs.writeFile(
+            packageJsonPath,
+            JSON.stringify(existingPackageJson, null, 2) + os.EOL,
+        );
+    }
 
     // Update docker compose image names to include the project name
     const composeTargets: Array<{ env: string; file: string }> = [

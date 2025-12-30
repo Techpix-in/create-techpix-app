@@ -11,6 +11,8 @@ import { getPkgManager } from "./helpers/get-pkg-manager";
 import { isFolderEmpty } from "./helpers/is-folder-empty";
 import { validateNpmName } from "./helpers/validate-pkg";
 import packageJson from "./package.json";
+import prompts from "prompts";
+import type { ApiClientType } from "./types";
 
 let projectPath: string = "";
 
@@ -64,6 +66,21 @@ async function run(): Promise<void> {
     process.exit(1);
   }
 
+  const res = await prompts({
+    type: "select",
+    name: "apiClient",
+    message: "Which API client would you like to use?",
+    choices: [
+      { title: "None", value: null },
+      { title: "Axios", value: "axios" },
+      { title: "React Query", value: "react-query" },
+      { title: "GraphQL (Apollo)", value: "graphql" },
+    ],
+    initial: 0,
+  });
+
+  const apiClient: ApiClientType = res.apiClient;
+
   // Use base template with default settings
   await createApp({
     appPath,
@@ -78,6 +95,7 @@ async function run(): Promise<void> {
     empty: false,
     turbopack: true,
     disableGit: false,
+    apiClient,
   });
 }
 

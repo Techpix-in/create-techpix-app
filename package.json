@@ -1,6 +1,6 @@
 {
   "name": "create-techpix-app",
-  "version": "15.1.6",
+  "version": "16.1.1",
   "keywords": [
     "react",
     "next",
@@ -23,6 +23,7 @@
     "build": "npm run release"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.10",
     "@types/async-retry": "^1.4.9",
     "@types/cross-spawn": "6.0.0",
     "@types/node": "20.14.2",

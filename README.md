@@ -8,15 +8,17 @@ The easiest way to get started with Techpix projects is by using create-techpix-
 - **Tailwind CSS pre-configured**: `postcss.config.mjs`, `tailwind` plugins, and `globals.css` ready.
 - **Shadcn/UI components included**: `button`, `badge`, `card`, `checkbox`, `dialog`, `input`, `label`, `pagination`, `radio-group`, `select`, `slider`, `switch`, `table`, `textarea`, and `sonner` toast wiring.
 - **ESLint config and TS config**: Template ships with `eslint.config.mjs` and `tsconfig.json` aligned to Next.js.
+- **Optional API Clients**: Pre-configured scaffolding for **Axios**, **React Query**, or **GraphQL**.
+- **Project Rollback**: Robust failure handling that cleans up the workspace if app creation is interrupted.
 - **Docker-first, multi-env setup**:
     - `docker/development`, `docker/production` with multi-stage Dockerfiles.
     - Per-env `compose.yaml` files.
     - **Image names auto-include project name** during scaffolding (e.g. `my-app-development`).
 - **Next.js standalone output**: Production images leverage `.next/standalone` for smaller containers.
 - **Ready-made routes and structure**: `auth/` route, `(main)/` group, example page and component folder.
+- **Commit Quality Tooling**: Husky, lint-staged, and conventional commits via `commitlint.config.ts`.
 - **Utilities and libs**: `lib/utils.ts` and shared UI primitives for rapid development.
 - **Public assets**: Starter icons and images in `public/`.
-- **Commit quality tooling**: Conventional commits via `commitlint.config.ts` in the template.
 
 ## Project Structure
 
@@ -30,12 +32,8 @@ my-app/
 │     ├─ Dockerfile
 │     └─ compose.yaml              # image: my-app-production
 ├─ public/
-│  ├─ file.svg
-│  ├─ globe.svg
-│  ├─ next.svg
 │  ├─ techpix.png
-│  ├─ vercel.svg
-│  └─ window.svg
+│  └─ ...
 ├─ src/
 │  ├─ app/
 │  │  ├─ (main)/
@@ -89,3 +87,4 @@ yarn create techpix-app
 # or
 pnpm create techpix-app
 ```
+

@@ -1,7 +1,7 @@
 <div align="center">
   <h1>Create Techpix App</h1>
-<a href="https://www.npmjs.com/package/next"><img alt="NPM version" src="https://img.shields.io/npm/v/next.svg?style=for-the-badge&labelColor=000000"></a>
-<a href="https://github.com/vercel/next.js/blob/canary/license.md"><img alt="License" src="https://img.shields.io/npm/l/next.svg?style=for-the-badge&labelColor=000000"></a>
+<a href="https://www.npmjs.com/package/create-techpix-app"><img alt="NPM version" src="https://img.shields.io/badge/NPM-16.1.1-blue.svg?style=for-the-badge&labelColor=000000?style=for-the-badge"></a>
+<a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge"></a>
 </div>
 <br/>
 The easiest way to get started with Techpix projects is by using create-techpix-app. This CLI tool enables you to quickly scaffold a new application by cloning one of the pre-configured boilerplates from a curated list of templates designed to follow Techpix's code conventions and project architecture.
@@ -91,4 +91,14 @@ yarn create techpix-app
 # or
 pnpm create techpix-app
 ```
+
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get started.
+
+## License
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 

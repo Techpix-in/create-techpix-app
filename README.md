@@ -1,5 +1,9 @@
-# Create Techpix App
-
+<div align="center">
+  <h1>Create Techpix App</h1>
+<a href="https://www.npmjs.com/package/next"><img alt="NPM version" src="https://img.shields.io/npm/v/next.svg?style=for-the-badge&labelColor=000000"></a>
+<a href="https://github.com/vercel/next.js/blob/canary/license.md"><img alt="License" src="https://img.shields.io/npm/l/next.svg?style=for-the-badge&labelColor=000000"></a>
+</div>
+<br/>
 The easiest way to get started with Techpix projects is by using create-techpix-app. This CLI tool enables you to quickly scaffold a new application by cloning one of the pre-configured boilerplates from a curated list of templates designed to follow Techpix's code conventions and project architecture.
 
 ## Features

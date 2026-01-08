@@ -8,7 +8,7 @@
   ],
   "description": "Create Next.js boilerplate with Tailwind CSS for Techpix Software Solutions Pvt. Ltd.",
   "author": "Techpix",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "bin": {
     "create-techpix-app": "./dist/index.js"
   },
